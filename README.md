@@ -79,7 +79,7 @@ The above configurations pulls our backend service and mysql image, and configur
 
 ```
 
-This file carries the configurations of running the laravel cron job in background.
+This file carries the configurations for running the laravel cron job in background.
 
 `cron.dockerfile`
 
