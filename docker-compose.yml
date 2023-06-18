@@ -1,0 +1,46 @@
+version: "3.7"
+
+services:
+    newswebapi:
+        image: mchris12/news-web-api:1.0
+        env_file:
+            - .env
+        ports:
+            - 8000:8000
+        restart: unless-stopped
+        depends_on:
+            - newsfeeddb
+        networks:
+            - news-feed
+
+    newsfeeddb:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_USER: news_web
+            MYSQL_PASSWORD: password
+            MYSQL_DATABASE: news_web
+        ports:
+            - 3306:3306
+        volumes:
+            - newsfeeddb-volume:/var/lib/mysql
+        restart: unless-stopped
+        networks:
+            - news-feed
+
+    newsfeedcronjob:
+        build:
+            context: .
+            dockerfile: cron.dockerfile
+        volumes:
+            - ./:/var/www/html
+        depends_on:
+            - newswebapi
+        networks:
+            - news-feed
+
+volumes:
+    newsfeeddb-volume:
+
+networks:
+    news-feed:
